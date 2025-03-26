@@ -1,4 +1,4 @@
-import { Button, Layout, Modal, Space, Spin, Table, Tag } from 'antd'
+import { Button, FloatButton, Layout, Modal, Space, Spin, Table, Tag } from 'antd'
 import { Content } from 'antd/es/layout/layout'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
@@ -40,7 +40,7 @@ function Category() {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <a>Delete</a>
+                    <Button onClick={() => handleEdit(record.id)}>Edit</Button>
                 </Space>
             ),
         },
@@ -60,6 +60,18 @@ function Category() {
     const handleCancel = () => {
         setIsModalOpen(false);
     }
+    const handleEdit = (id) => {
+        console.log(id);
+        setId(id);
+        setIsModalOpen(true);
+    }
+
+    const handleAdd = () => {
+
+        setIsModalOpen(true)
+    }
+    // xử lý sửa 
+    const [id, setId] = useState();
     return (
         <Layout>
 
@@ -67,13 +79,13 @@ function Category() {
 
                 <Content>
 
-                    <Button onClick={() => setIsModalOpen(true)}>Thêm mới</Button>
+                    <Button onClick={handleAdd}>Thêm mới</Button>
                     {isLoading ? <Spin /> : <Table columns={columns} dataSource={dataCategory} pagination={false} rowKey={record => record.id} />}
 
                 </Content>
             </Layout>
 
-            <ModalCategory isModalOpen={isModalOpen} handleCancel={handleCancel} />
+            <ModalCategory isModalOpen={isModalOpen} handleCancel={handleCancel} id={id} />
         </Layout>
     )
 }

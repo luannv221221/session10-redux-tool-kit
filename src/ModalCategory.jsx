@@ -3,21 +3,39 @@ import { Button, Checkbox, Form, Input, Modal } from 'antd';
 import axios from 'axios';
 import { getCategoriesThunk } from './redux/reducres/categorySlice';
 import { useDispatch } from 'react-redux';
-function ModalCategory({ isModalOpen, handleCancel }) {
+function ModalCategory({ isModalOpen, handleCancel, id }) {
+    const [form] = Form.useForm();
     const dispath = useDispatch();
+    form.resetFields();
+    if (id) {
+        // call api lấy chi tiết danh mục 
+        axios.get(`http://localhost:8080/api/v1/admin/categories/${id}`).then(res => {
+            console.log("Data cần sứaar", res.data);
+            form.setFieldsValue(res.data);
+        }).catch(err => console.log(err));
+    }
     const onFinish = values => {
-        console.log('Success:', values);
-        axios.post("http://localhost:8080/api/v1/admin/categories", values).then((res) => {
-            console.log(res);
-            dispath(getCategoriesThunk());
-            // gọi hàm đóng modal
-            handleCancel();
-        }).catch(e => console.log(e))
+
+        if (values.id) {
+            axios.put(`http://localhost:8080/api/v1/admin/categories/${id}`, values).then((res) => {
+                console.log(res);
+                dispath(getCategoriesThunk());
+                // gọi hàm đóng modal
+                handleCancel();
+            }).catch(e => console.log(e))
+        } else {
+            axios.post("http://localhost:8080/api/v1/admin/categories", values).then((res) => {
+                console.log(res);
+                dispath(getCategoriesThunk());
+                // gọi hàm đóng modal
+                handleCancel();
+            }).catch(e => console.log(e))
+        }
+        form.resetFields();
     };
     const onFinishFailed = errorInfo => {
         console.log('Failed:', errorInfo);
     };
-
 
 
     return (
@@ -32,6 +50,7 @@ function ModalCategory({ isModalOpen, handleCancel }) {
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
+                    form={form}
                 >
                     <Form.Item
                         label="categoryName"
@@ -48,11 +67,13 @@ function ModalCategory({ isModalOpen, handleCancel }) {
                     >
                         <Input.TextArea />
                     </Form.Item>
-
+                    <Form.Item name="id">
+                        <Input hidden={true} value={id} />
+                    </Form.Item>
 
                     <Form.Item label={null}>
                         <Button type="primary" htmlType="submit">
-                            Thêm mới
+                            {id ? "Update" : "Thêm mới"}
                         </Button>
                     </Form.Item>
                 </Form>
