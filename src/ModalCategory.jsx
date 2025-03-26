@@ -1,11 +1,17 @@
 import React, { useState } from 'react'
 import { Button, Checkbox, Form, Input, Modal } from 'antd';
 import axios from 'axios';
+import { getCategoriesThunk } from './redux/reducres/categorySlice';
+import { useDispatch } from 'react-redux';
 function ModalCategory({ isModalOpen, handleCancel }) {
+    const dispath = useDispatch();
     const onFinish = values => {
         console.log('Success:', values);
         axios.post("http://localhost:8080/api/v1/admin/categories", values).then((res) => {
             console.log(res);
+            dispath(getCategoriesThunk());
+            // gọi hàm đóng modal
+            handleCancel();
         }).catch(e => console.log(e))
     };
     const onFinishFailed = errorInfo => {

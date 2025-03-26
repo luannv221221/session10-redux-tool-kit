@@ -1,11 +1,15 @@
-import { Button, Layout, Modal, Space, Table, Tag } from 'antd'
+import { Button, Layout, Modal, Space, Spin, Table, Tag } from 'antd'
 import { Content } from 'antd/es/layout/layout'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Checkbox, Form, Input } from 'antd';
 import ModalCategory from './ModalCategory';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCategoriesThunk } from './redux/reducres/categorySlice';
+import { data } from 'react-router-dom';
 function Category() {
-    const [data, setData] = useState([])
+
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const columns = [
         {
@@ -41,15 +45,16 @@ function Category() {
             ),
         },
     ];
-
-    const getCategoriesAPI = () => {
-        axios.get("http://localhost:8080/api/v1/admin/categories").then((response) => {
-            console.log(response);
-            setData(response.data.content);
-        }).catch(err => console.log(err));
-    }
+    // khai báo data 
+    const dataCategory = useSelector((state) => {
+        // console.log(state);
+        return state.categories.data;
+    });
+    const isLoading = useSelector((sate) => sate.categories.loading);
+    const dispath = useDispatch();
     useEffect(() => {
-        getCategoriesAPI();
+        dispath(getCategoriesThunk())
+
     }, [])
 
     const handleCancel = () => {
@@ -63,7 +68,8 @@ function Category() {
                 <Content>
 
                     <Button onClick={() => setIsModalOpen(true)}>Thêm mới</Button>
-                    <Table columns={columns} dataSource={data} pagination={false} />
+                    {isLoading ? <Spin /> : <Table columns={columns} dataSource={dataCategory} pagination={false} rowKey={record => record.id} />}
+
                 </Content>
             </Layout>
 

@@ -11,6 +11,7 @@ import UserLayout from './layouts/UserLayout';
 import Home from './Home';
 import CategoryLayout from './layouts/CategoryLayout';
 import Category from './Category';
+import { Provider } from 'react-redux';
 function App() {
   const [count, setCount] = useState(0)
 
