@@ -6,14 +6,26 @@ import Header from './Header'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import UpdateQtyCart from './UpdateQtyCart';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Route, Routes } from 'react-router-dom';
+import UserLayout from './layouts/UserLayout';
+import Home from './Home';
+import CategoryLayout from './layouts/CategoryLayout';
+import Category from './Category';
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <Header />
-      <UpdateQtyCart />
-
+      {/* <Header />
+      <UpdateQtyCart /> */}
+      <Routes>
+        <Route element={<UserLayout />}>
+          <Route index element={<Home />}></Route>
+        </Route>
+        <Route path='category' element={<CategoryLayout />}>
+          <Route index element={<Category />}></Route>
+        </Route>
+      </Routes>
     </>
   )
 }
